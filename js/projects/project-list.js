@@ -1,5 +1,6 @@
 import { api, ApiError } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
+import { signOut } from '../auth/auth-service.js';
 
 const state = {
   projects: [],
@@ -52,6 +53,14 @@ function projectCard(project) {
   `;
 }
 
+function wireCards(container) {
+  container.querySelectorAll('.project-card[data-id]').forEach((card) => {
+    card.addEventListener('click', () => {
+      location.href = `editor.html?projectId=${card.dataset.id}`;
+    });
+  });
+}
+
 function renderEmpty(container, message, actionLabel) {
   container.innerHTML = `
     <div class="project-card empty-state">
@@ -81,11 +90,7 @@ function render() {
     );
   } else {
     listEl.innerHTML = filtered.map(projectCard).join('');
-    listEl.querySelectorAll('.project-card[data-id]').forEach((card) => {
-      card.addEventListener('click', () => {
-        location.href = `editor.html?projectId=${card.dataset.id}`;
-      });
-    });
+    wireCards(listEl);
   }
 
   const recent = state.projects.slice(0, 3);
@@ -97,23 +102,48 @@ function render() {
       </div>`;
   } else {
     recentEl.innerHTML = recent.map(projectCard).join('');
-    recentEl.querySelectorAll('.project-card[data-id]').forEach((card) => {
-      card.addEventListener('click', () => {
-        location.href = `editor.html?projectId=${card.dataset.id}`;
-      });
-    });
+    wireCards(recentEl);
   }
 }
 
+/* ---------- Modals ---------- */
+
+function openModal(id) {
+  document.getElementById(id).style.display = 'flex';
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function wireModalClose() {
+  document.querySelectorAll('[data-close]').forEach((el) => {
+    el.addEventListener('click', () => closeModal(el.dataset.close));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal').forEach((m) => (m.style.display = 'none'));
+    }
+  });
+}
+
+function openPanel(title, bodyHtml, afterRender) {
+  document.getElementById('panel-title').textContent = title;
+  const body = document.getElementById('panel-body');
+  body.innerHTML = bodyHtml;
+  openModal('panel-modal');
+  if (afterRender) afterRender(body);
+}
+
+/* ---------- Wizard ---------- */
+
 function openWizard() {
-  const modal = document.getElementById('project-wizard-modal');
-  modal.style.display = 'flex';
+  openModal('project-wizard-modal');
   document.getElementById('book-title').focus();
 }
 
 function closeWizard() {
-  const modal = document.getElementById('project-wizard-modal');
-  modal.style.display = 'none';
+  closeModal('project-wizard-modal');
   document.getElementById('project-wizard-form').reset();
 }
 
@@ -123,8 +153,7 @@ async function loadProjects() {
     state.projects = data.projects || [];
     render();
   } catch (err) {
-    const listEl = document.getElementById('projects-list');
-    renderEmpty(listEl, err.message || 'Could not load projects', null);
+    renderEmpty(document.getElementById('projects-list'), err.message || 'Could not load projects', null);
   }
 }
 
@@ -136,11 +165,6 @@ function wireWizard() {
   document.getElementById('new-book-btn-header').addEventListener('click', openWizard);
   document.getElementById('wizard-close').addEventListener('click', closeWizard);
   document.getElementById('wizard-cancel').addEventListener('click', closeWizard);
-  document.querySelector('.modal-backdrop').addEventListener('click', closeWizard);
-
-  document.getElementById('import-project-btn').addEventListener('click', () => {
-    alert('Project import is coming soon.');
-  });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -167,6 +191,97 @@ function wireWizard() {
   });
 }
 
+/* ---------- Import ---------- */
+
+function toHtml(raw) {
+  if (/<[a-z][\s\S]*>/i.test(raw)) return raw;
+  return raw
+    .split(/\n{2,}/)
+    .map((para) => `<p>${escapeHtml(para).replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+async function importProject(file) {
+  const text = await file.text();
+  const lower = file.name.toLowerCase();
+  const baseName = file.name.replace(/\.[^.]+$/, '');
+  const author = currentUser()?.display_name || 'Unknown Author';
+
+  let projectMeta = { title: baseName, author_name: author };
+  let jsonDocs = null;
+
+  if (lower.endsWith('.json')) {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      throw new Error('That file is not valid JSON.');
+    }
+    const proj = parsed.export?.project || parsed.project || {};
+    projectMeta = {
+      title: proj.title || baseName,
+      author_name: proj.author_name || author,
+      subtitle: proj.subtitle || undefined
+    };
+    jsonDocs = parsed.export?.documents || parsed.documents || [];
+  }
+
+  const created = await api('/projects', { method: 'POST', body: projectMeta });
+  const projectId = created.project.id;
+  const firstDocId = created.structure.documents[0].id;
+
+  async function setContent(docId, content) {
+    await api(`/projects/${projectId}/documents`, {
+      method: 'PATCH',
+      body: { id: docId, content_json: { format: 'html', html: toHtml(content) } }
+    });
+  }
+
+  if (jsonDocs && jsonDocs.length) {
+    await setContent(firstDocId, jsonDocs[0].html || '');
+    for (const doc of jsonDocs.slice(1)) {
+      const { document: created2 } = await api(`/projects/${projectId}/documents`, {
+        method: 'POST',
+        body: { title: doc.title || 'Chapter' }
+      });
+      await setContent(created2.id, doc.html || '');
+    }
+  } else {
+    await setContent(firstDocId, text);
+  }
+
+  return projectId;
+}
+
+function wireImport() {
+  document.getElementById('import-project-btn').addEventListener('click', () => {
+    openModal('import-modal');
+  });
+
+  const input = document.getElementById('import-file');
+  const confirm = document.getElementById('import-confirm');
+
+  confirm.addEventListener('click', async () => {
+    const file = input.files[0];
+    if (!file) {
+      alert('Choose a file to import first.');
+      return;
+    }
+    confirm.disabled = true;
+    confirm.textContent = 'Importing...';
+    try {
+      const projectId = await importProject(file);
+      location.href = `editor.html?projectId=${projectId}`;
+    } catch (err) {
+      confirm.disabled = false;
+      confirm.textContent = 'Import';
+      alert(err.message || 'Import failed.');
+    }
+  });
+}
+
+/* ---------- Filters ---------- */
+
 function wireFilters() {
   document.querySelectorAll('.filter-btn').forEach((button) => {
     button.addEventListener('click', () => {
@@ -187,6 +302,131 @@ function wireFilters() {
   });
 }
 
+/* ---------- Sidebar navigation ---------- */
+
+function navTo(hash, updateActive = true) {
+  if (updateActive) {
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach((item) => item.classList.remove('active'));
+    const link = document.querySelector(`.sidebar-nav .nav-item[href="${hash}"]`);
+    if (link) link.classList.add('active');
+  }
+  if (hash === 'dashboard.html') return;
+  if (hash === '#my-books') {
+    document.querySelector('.my-projects-section').scrollIntoView({ behavior: 'smooth' });
+  } else if (hash === '#recent') {
+    document.querySelector('.continue-writing-section').scrollIntoView({ behavior: 'smooth' });
+  } else if (hash === '#templates') {
+    showTemplates();
+  } else if (hash === '#assets') {
+    showAssets();
+  } else if (hash === '#trash') {
+    showTrash();
+  } else if (hash === '#settings') {
+    showSettings();
+  } else if (hash === '#help') {
+    showHelp();
+  }
+}
+
+function showTemplates() {
+  const templates = [
+    { id: 'blank', name: 'Blank', desc: 'Start from a clean slate.' },
+    { id: 'novel', name: 'Novel', desc: 'Chapter-based fiction layout.' },
+    { id: 'business', name: 'Business Book', desc: 'Structured, professional layout.' },
+    { id: 'academic', name: 'Academic Book', desc: 'Citations and references ready.' },
+    { id: 'workbook', name: 'Workbook', desc: 'Exercises and worksheets.' }
+  ];
+  openPanel(
+    'Templates',
+    `<div class="panel-list">${templates
+      .map(
+        (t) => `<button class="panel-item" data-template="${t.id}">
+          <span class="panel-item-name">${t.name}</span>
+          <span class="panel-item-desc">${t.desc}</span>
+        </button>`
+      )
+      .join('')}</div>`,
+    (body) => {
+      body.querySelectorAll('[data-template]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          closeModal('panel-modal');
+          document.getElementById('template').value = btn.dataset.template;
+          openWizard();
+        });
+      });
+    }
+  );
+}
+
+function showAssets() {
+  openPanel(
+    'Asset Library',
+    `<p class="panel-empty">Assets belong to individual books. Open a book and use the Image or Drawing tools in the editor to add images.</p>`
+  );
+}
+
+function showTrash() {
+  openPanel(
+    'Recycle Bin',
+    `<p class="panel-empty">Deleted books are removed from your dashboard. There are no deleted books to restore.</p>`
+  );
+}
+
+function showSettings() {
+  const user = currentUser() || {};
+  openPanel(
+    'Settings',
+    `<div class="panel-field"><span class="panel-label">Name</span><span>${escapeHtml(user.display_name || 'Writer')}</span></div>
+     <div class="panel-field"><span class="panel-label">Email</span><span>${escapeHtml(user.email || '')}</span></div>
+     <div class="modal-actions"><button type="button" class="btn btn-secondary" id="settings-signout">Sign Out</button></div>`,
+    (body) => {
+      body.querySelector('#settings-signout').addEventListener('click', async () => {
+        await signOut();
+        location.replace('login.html');
+      });
+    }
+  );
+}
+
+function showHelp() {
+  const shortcuts = [
+    ['Ctrl / Cmd + S', 'Save the current chapter'],
+    ['Ctrl / Cmd + F', 'Find within the chapter'],
+    ['Ctrl / Cmd + B', 'Bold'],
+    ['Ctrl / Cmd + I', 'Italic'],
+    ['Ctrl / Cmd + U', 'Underline'],
+    ['Ctrl / Cmd + Z', 'Undo'],
+    ['Esc', 'Close dialogs']
+  ];
+  openPanel(
+    'Help & Shortcuts',
+    `<div class="panel-list">${shortcuts
+      .map(
+        ([key, desc]) => `<div class="panel-field"><span class="panel-label">${key}</span><span>${desc}</span></div>`
+      )
+      .join('')}
+     <p class="panel-empty">Need more help? Email <a href="mailto:dev@re-el.com">dev@re-el.com</a>.</p></div>`
+  );
+}
+
+function wireSidebarNav() {
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach((item) => {
+    item.addEventListener('click', (event) => {
+      const hash = item.getAttribute('href');
+      if (hash.startsWith('#')) {
+        event.preventDefault();
+        navTo(hash);
+      } else if (hash === 'dashboard.html') {
+        event.preventDefault();
+        document.querySelector('.my-projects-section').scrollIntoView({ behavior: 'smooth' });
+        navTo('#my-books');
+      }
+    });
+  });
+}
+
+/* ---------- Init ---------- */
+
 function init() {
   const session = requireAuth();
   if (!session) return;
@@ -199,7 +439,10 @@ function init() {
 
   wireSignOut();
   wireWizard();
+  wireImport();
   wireFilters();
+  wireModalClose();
+  wireSidebarNav();
   loadProjects();
 }
 

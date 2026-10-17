@@ -38,6 +38,14 @@
       </div>
     </header>
 
+    <div class="search-bar" id="search-bar" style="display: none;">
+      <input type="text" id="search-input" class="search-input" placeholder="Find in this chapter...">
+      <span class="search-count" id="search-count">0/0</span>
+      <button class="toolbar-btn" id="search-prev" title="Previous match">↑</button>
+      <button class="toolbar-btn" id="search-next" title="Next match">↓</button>
+      <button class="toolbar-btn" id="search-close" title="Close">✕</button>
+    </div>
+
     <div class="editor-main">
       <aside class="project-navigator">
         <div class="navigator-header">
@@ -188,7 +196,91 @@
             </div>
           </div>
         </div>
+
+        <div class="inspector-content" id="inspector-text" style="display: none;">
+          <h4>Text</h4>
+          <div class="form-group">
+            <label for="text-font">Font Family</label>
+            <select class="form-control" id="text-font">
+              <option value="Inter">Inter</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Arial">Arial</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Garamond">Garamond</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="text-size">Font Size (pt)</label>
+            <input type="number" class="form-control" id="text-size" min="6" max="144" value="12">
+          </div>
+          <div class="form-group">
+            <label for="text-color">Text Colour</label>
+            <input type="color" class="form-control" id="text-color" value="#111827">
+          </div>
+          <div class="form-group">
+            <label for="text-lineheight">Line Height</label>
+            <input type="range" id="text-lineheight" min="1" max="3" step="0.1" value="1.8">
+          </div>
+          <div class="form-group">
+            <label>Alignment</label>
+            <div class="inspector-btn-row">
+              <button class="toolbar-btn" data-align="justifyLeft" title="Left">◀</button>
+              <button class="toolbar-btn" data-align="justifyCenter" title="Center">▬</button>
+              <button class="toolbar-btn" data-align="justifyRight" title="Right">▶</button>
+              <button class="toolbar-btn" data-align="justifyFull" title="Justify">▮</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="inspector-content" id="inspector-image" style="display: none;">
+          <h4>Image</h4>
+          <div class="form-group">
+            <label for="image-url">Image URL</label>
+            <input type="url" class="form-control" id="image-url" placeholder="https://...">
+          </div>
+          <button class="btn btn-primary btn-full" id="image-insert-url">Insert from URL</button>
+          <div class="form-group">
+            <label for="image-upload">Upload Image</label>
+            <input type="file" id="image-upload" accept="image/*" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="image-width">Width (px, blank = auto)</label>
+            <input type="number" class="form-control" id="image-width" placeholder="auto" min="20">
+          </div>
+          <p class="inspector-hint">Select an image on the page, then adjust width to resize it.</p>
+        </div>
+
+        <div class="inspector-content" id="inspector-drawing" style="display: none;">
+          <h4>Drawing</h4>
+          <div class="form-group">
+            <label for="draw-color">Brush Colour</label>
+            <input type="color" id="draw-color" value="#111827">
+          </div>
+          <div class="form-group">
+            <label for="draw-size">Brush Size</label>
+            <input type="range" id="draw-size" min="1" max="30" value="3">
+          </div>
+          <canvas id="draw-canvas" width="240" height="180" class="draw-canvas"></canvas>
+          <div class="inspector-btn-row">
+            <button class="btn btn-secondary" id="draw-clear">Clear</button>
+            <button class="btn btn-primary" id="draw-insert">Insert</button>
+          </div>
+        </div>
       </aside>
+    </div>
+  </div>
+
+  <div id="preview-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop" data-close="preview-modal"></div>
+    <div class="modal-content modal-wide">
+      <div class="modal-header">
+        <h2>Preview</h2>
+        <button class="modal-close" data-close="preview-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <article class="preview-book" id="preview-content"></article>
+      </div>
     </div>
   </div>
 

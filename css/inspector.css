@@ -1,0 +1,8 @@
+.properties-inspector {
+  background: var(--color-white);
+}
+
+.inspector-tab.active {
+  color: var(--color-deep-sky-blue);
+  border-bottom: 2px solid var(--color-deep-sky-blue);
+}

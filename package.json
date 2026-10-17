@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "description": "Re-EL Scribbler - Professional book writing, document composition, and publishing platform",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
     "dev": "vercel dev --listen 3000",
     "build": "echo 'Static build - HTML/CSS/JS' && node -e \"console.log('build done')\"",

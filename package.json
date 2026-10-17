@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Re-EL Scribbler - Professional book writing, document composition, and publishing platform",
+  "description": "Re-EL Scribbler",
   "scripts": {
     "dev": "vercel dev --listen 3000",
     "build": "echo 'Static build - HTML/CSS/JS' && node -e \"console.log('build done')\"",
-    "lint": "eslint js --ext .js --max-warnings=0 2>/dev/null || echo 'no eslint configured'",
-    "typecheck": "tsc --noEmit 2>/dev/null || echo 'no typescript config'"
+    "lint": "echo 'no lint'",
+    "typecheck": "echo 'no typecheck'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

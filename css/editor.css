@@ -339,3 +339,18 @@
   font-weight: 400;
   font-size: 0.875rem;
 }
+
+.save-status.status-saved .status-dot {
+  background: #1c7a4b;
+  box-shadow: 0 0 6px #1c7a4b;
+}
+
+.save-status.status-saving .status-dot {
+  background: #a96a00;
+  box-shadow: 0 0 6px #a96a00;
+}
+
+.save-status.status-unsaved .status-dot {
+  background: #c0392b;
+  box-shadow: 0 0 6px #c0392b;
+}

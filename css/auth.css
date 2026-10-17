@@ -68,3 +68,22 @@
 .auth-footer a:hover {
   text-decoration: underline;
 }
+
+.auth-status {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  background: var(--color-background-grey);
+  color: var(--color-charcoal);
+}
+
+.auth-status-error {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.auth-status-success {
+  background: #e3f6ec;
+  color: #1c7a4b;
+}

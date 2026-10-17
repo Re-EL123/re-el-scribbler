@@ -189,3 +189,100 @@
   padding-top: 1rem;
   border-top: 1px solid var(--color-light-grey);
 }
+
+.project-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-black);
+  line-height: 1.3;
+}
+
+.project-card-author {
+  font-size: 0.8125rem;
+  color: var(--color-slate-grey);
+}
+
+.project-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--color-slate-grey);
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-light-grey);
+  margin-top: 0.25rem;
+}
+
+.project-status {
+  align-self: flex-start;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-background-grey);
+  color: var(--color-slate-grey);
+}
+
+.project-status.status-in_progress {
+  background: var(--color-pale-sky-blue);
+  color: var(--color-deep-sky-blue);
+}
+
+.project-status.status-published {
+  background: #e3f6ec;
+  color: #1c7a4b;
+}
+
+.project-status.status-review {
+  background: #fff4e0;
+  color: #a96a00;
+}
+
+.project-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-background-grey);
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.project-progress-bar {
+  height: 100%;
+  background: var(--color-sky-blue);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.projects-grid.view-list {
+  grid-template-columns: 1fr;
+}
+
+.sidebar-user {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0.25rem;
+  margin-bottom: 0.75rem;
+  border-top: 1px solid var(--color-light-grey);
+}
+
+.sidebar-user-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-black);
+}
+
+.sidebar-user-email {
+  font-size: 0.75rem;
+  color: var(--color-slate-grey);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

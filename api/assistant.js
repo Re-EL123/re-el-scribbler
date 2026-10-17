@@ -1,6 +1,6 @@
-import { withApi } from '../../lib/handler.js';
-import { ok, fail, ApiError } from '../../lib/respond.js';
-import { requireUser } from '../../lib/auth.js';
+import { withApi } from '../lib/handler.js';
+import { ok, fail, ApiError } from '../lib/respond.js';
+import { requireUser } from '../lib/auth.js';
 
 const SYSTEM_PROMPT =
   'You are the Re-EL Scribbler writing assistant. Help authors improve clarity, structure, and tone. Reply concisely and stay on the task.';

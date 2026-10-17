@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Re-EL Scribbler - Professional book writing, document composition, and publishing platform",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "vercel dev --listen 3000",

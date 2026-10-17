@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Re-EL Scribbler",
+  "description": "Re-EL Scribbler - Professional book writing platform",
   "scripts": {
     "dev": "vercel dev --listen 3000",
     "build": "echo 'Static build - HTML/CSS/JS' && node -e \"console.log('build done')\"",
@@ -21,8 +21,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@vercel/node": "^3.2.24",
-    "eslint": "^9.12.0",
-    "typescript": "^5.6.3"
+    "@vercel/node": "^3.2.24"
   }
 }

@@ -1,0 +1,70 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 2rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+}
+
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  color: var(--color-light-grey);
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--color-white);
+}
+
+.nav-item.active {
+  background: var(--color-sky-blue);
+  color: var(--color-black);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+.main-content {
+  flex: 1;
+  background: var(--color-background-grey);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}

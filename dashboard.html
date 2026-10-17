@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Re-EL Scribbler</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="sidebar-logo">
+        <h2>Re-EL Scribbler</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item active">Dashboard</a>
+        <a href="#my-books" class="nav-item">My Books</a>
+        <a href="#recent" class="nav-item">Recent Documents</a>
+        <a href="#templates" class="nav-item">Templates</a>
+        <a href="#assets" class="nav-item">Asset Library</a>
+        <a href="#trash" class="nav-item">Recycle Bin</a>
+        <a href="#settings" class="nav-item">Settings</a>
+        <a href="#help" class="nav-item">Help & Shortcuts</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="new-book-btn" class="btn btn-primary btn-full">+ New Book</button>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="content-header">
+        <h1>Dashboard</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="import-project-btn">Import Project</button>
+          <button class="btn btn-primary" id="new-book-btn-header">New Book</button>
+        </div>
+      </header>
+
+      <section class="welcome-section">
+        <div class="welcome-card">
+          <h2>Welcome to Re-EL Scribbler</h2>
+          <p>Write freely. Organise intelligently. Design beautifully. Publish confidently.</p>
+        </div>
+      </section>
+
+      <section class="continue-writing-section">
+        <h2>Continue Writing</h2>
+        <div id="recent-projects" class="projects-grid">
+          <div class="project-card empty-state">
+            <p>No recent projects</p>
+            <small>Create your first book to get started</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="my-projects-section">
+        <div class="section-header">
+          <h2>My Projects</h2>
+          <div class="view-toggle">
+            <button class="toggle-btn active" data-view="grid">Grid</button>
+            <button class="toggle-btn" data-view="list">List</button>
+          </div>
+        </div>
+        <div class="project-filters">
+          <button class="filter-btn active" data-filter="all">All Projects</button>
+          <button class="filter-btn" data-filter="in_progress">In Progress</button>
+          <button class="filter-btn" data-filter="draft">Draft Complete</button>
+          <button class="filter-btn" data-filter="review">Ready for Review</button>
+          <button class="filter-btn" data-filter="published">Published</button>
+          <button class="filter-btn" data-filter="archived">Archived</button>
+        </div>
+        <div id="projects-list" class="projects-grid">
+          <div class="project-card empty-state">
+            <p>No projects yet</p>
+            <button class="btn btn-primary" id="create-first-book">Create Your First Book</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="project-wizard-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create New Book</h2>
+        <button class="modal-close" id="wizard-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="project-wizard-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-title">Book Title <span style="color: red;">*</span></label>
+              <input type="text" id="book-title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="book-author">Author Name <span style="color: red;">*</span></label>
+              <input type="text" id="book-author" name="author_name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="book-subtitle">Subtitle</label>
+            <input type="text" id="book-subtitle" name="subtitle">
+          </div>
+          <div class="form-group">
+            <label for="book-description">Description</label>
+            <textarea id="book-description" name="description" rows="3"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-language">Language</label>
+              <select id="book-language" name="language">
+                <option value="en">English</option>
+                <option value="en-za">English (South Africa)</option>
+                <option value="en-gb">English (UK)</option>
+                <option value="en-us">English (US)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="book-category">Category</label>
+              <select id="book-category" name="category">
+                <option value="novel">Novel</option>
+                <option value="short-story">Short Story</option>
+                <option value="autobiography">Autobiography</option>
+                <option value="business">Business Book</option>
+                <option value="academic">Academic Book</option>
+                <option value="research">Research Publication</option>
+                <option value="poetry">Poetry Collection</option>
+                <option value="children">Children's Illustrated Book</option>
+                <option value="workbook">Workbook</option>
+                <option value="blank">Blank Book</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="page-size">Page Size</label>
+              <select id="page-size" name="page_size">
+                <option value="a4">A4 (210 × 297 mm)</option>
+                <option value="a5">A5 (148 × 210 mm)</option>
+                <option value="us-letter">US Letter (8.5 × 11 in)</option>
+                <option value="us-trade">US Trade (6 × 9 in)</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="template">Template</label>
+              <select id="template" name="template">
+                <option value="blank">Blank</option>
+                <option value="novel">Novel</option>
+                <option value="business">Business Book</option>
+                <option value="academic">Academic Book</option>
+                <option value="workbook">Workbook</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="wizard-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Book</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/projects/project-list.js"></script>
+</body>
+</html>

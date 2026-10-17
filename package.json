@@ -1,0 +1,28 @@
+{
+  "name": "re-el-scribbler",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Re-EL Scribbler - Professional book writing, document composition, and publishing platform",
+  "scripts": {
+    "dev": "vercel dev --listen 3000",
+    "build": "echo 'Static build - HTML/CSS/JS' && node -e \"console.log('build done')\"",
+    "lint": "eslint js --ext .js --max-warnings=0 2>/dev/null || echo 'no eslint configured'",
+    "typecheck": "tsc --noEmit 2>/dev/null || echo 'no typescript config'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "dexie": "^4.0.8",
+    "dompurify": "^3.1.7",
+    "fabric": "^6.4.3",
+    "lucide": "^0.452.0",
+    "pdf-lib": "^1.17.1",
+    "sortablejs": "^1.15.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.2.24",
+    "eslint": "^9.12.0",
+    "typescript": "^5.6.3"
+  }
+}

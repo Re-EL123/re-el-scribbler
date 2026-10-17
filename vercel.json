@@ -5,6 +5,5 @@
       "maxDuration": 10
     }
   },
-  "outputDirectory": ".",
-  "nodeVersion": "20.x"
+  "outputDirectory": "."
 }

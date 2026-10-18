@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editor - Re-EL Scribbler</title>
+  <link rel="preconnect" href="https://re-el-scribbler.vercel.app" crossorigin>
+  <link rel="dns-prefetch" href="https://ptqinzavcrvnhqexkxik.supabase.co">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
@@ -12,15 +14,51 @@
   <link rel="stylesheet" href="css/toolbar.css">
   <link rel="stylesheet" href="css/canvas.css">
   <link rel="stylesheet" href="css/inspector.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="modulepreload" href="js/core/ui.js">
+  <link rel="modulepreload" href="vendor/lucide-subset.js">
 </head>
 <body>
+  <div id="app-loader" role="status" aria-live="polite" aria-label="Loading">
+    <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="" class="app-loader-logo" fetchpriority="high">
+    <div class="app-loader-spinner"></div>
+    <p class="app-loader-text">Re-EL Scribbler</p>
+  </div>
   <div class="editor-layout">
+    <aside class="sidebar app-sidebar collapsed" id="editor-sidebar">
+      <div class="sidebar-header">
+        <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="sidebar-logo">
+        <h2>Re-EL Scribbler</h2>
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle sidebar" aria-expanded="false">
+          <i data-lucide="panel-left"></i>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        <a href="dashboard.html#my-books" class="nav-item"><i data-lucide="library"></i><span class="nav-label">My Books</span></a>
+        <a href="#" class="nav-item active" id="editor-nav-chapters"><i data-lucide="book-open"></i><span class="nav-label">Chapters</span></a>
+        <a href="dashboard.html#recent" class="nav-item"><i data-lucide="file-text"></i><span class="nav-label">Recent</span></a>
+        <a href="dashboard.html#settings" class="nav-item"><i data-lucide="settings"></i><span class="nav-label">Settings</span></a>
+        <a href="dashboard.html#help" class="nav-item"><i data-lucide="circle-help"></i><span class="nav-label">Help</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <span class="sidebar-user-name" id="user-name">Writer</span>
+          <span class="sidebar-user-email" id="user-email"></span>
+        </div>
+        <button class="btn btn-secondary btn-full btn-with-icon" data-action="sign-out">
+          <i data-lucide="log-out"></i><span class="btn-label">Sign Out</span>
+        </button>
+      </div>
+    </aside>
+    <div class="editor-shell">
     <header class="editor-topbar">
       <div class="topbar-left">
+        <button class="icon-btn" id="sidebar-open-btn" data-sidebar-toggle data-sidebar-target="editor-sidebar" title="Toggle sidebar" aria-label="Toggle sidebar"><i data-lucide="menu"></i></button>
         <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="topbar-logo">
         <div class="book-title-group">
           <span id="book-title" class="book-title">Untitled Book</span>
-          <button class="icon-btn" id="rename-book" title="Rename">✎</button>
+          <button class="icon-btn" id="rename-book" title="Rename"><i data-lucide="square-pen"></i></button>
         </div>
       </div>
       <div class="topbar-center">
@@ -30,26 +68,27 @@
         </div>
       </div>
       <div class="topbar-right">
-        <button class="topbar-btn" id="undo-btn" title="Undo">Undo</button>
-        <button class="topbar-btn" id="redo-btn" title="Redo">Redo</button>
-        <button class="topbar-btn" id="search-btn" title="Search">Search</button>
-        <button class="topbar-btn" id="preview-btn" title="Preview">Preview</button>
-        <button class="topbar-btn btn-primary" id="export-btn" title="Export">Export</button>
+        <button class="topbar-btn btn-with-icon" id="undo-btn" title="Undo"><i data-lucide="undo-2"></i><span class="btn-label">Undo</span></button>
+        <button class="topbar-btn btn-with-icon" id="redo-btn" title="Redo"><i data-lucide="redo-2"></i><span class="btn-label">Redo</span></button>
+        <button class="topbar-btn btn-with-icon" id="search-btn" title="Search"><i data-lucide="search"></i><span class="btn-label">Search</span></button>
+        <button class="topbar-btn btn-with-icon" id="preview-btn" title="Preview"><i data-lucide="eye"></i><span class="btn-label">Preview</span></button>
+        <button class="topbar-btn btn-primary btn-with-icon" id="export-btn" title="Export"><i data-lucide="download"></i><span class="btn-label">Export</span></button>
       </div>
     </header>
 
     <div class="search-bar" id="search-bar" style="display: none;">
+      <i data-lucide="search"></i>
       <input type="text" id="search-input" class="search-input" placeholder="Find in this chapter...">
       <span class="search-count" id="search-count">0/0</span>
-      <button class="toolbar-btn" id="search-prev" title="Previous match">↑</button>
-      <button class="toolbar-btn" id="search-next" title="Next match">↓</button>
-      <button class="toolbar-btn" id="search-close" title="Close">✕</button>
+      <button class="toolbar-btn" id="search-prev" title="Previous match"><i data-lucide="chevron-left"></i></button>
+      <button class="toolbar-btn" id="search-next" title="Next match"><i data-lucide="chevron-right"></i></button>
+      <button class="toolbar-btn" id="search-close" title="Close"><i data-lucide="x"></i></button>
     </div>
 
     <div class="editor-main">
       <aside class="project-navigator">
         <div class="navigator-header">
-          <h3>Project Navigator</h3>
+          <h3><i data-lucide="library"></i> Project Navigator</h3>
         </div>
         <div class="navigator-content" id="navigator-content">
           <div class="navigator-section">
@@ -62,12 +101,12 @@
                 <span class="chapter-name">Chapter 1</span>
               </div>
             </div>
-            <button class="add-section-btn" id="add-chapter">+ Add Chapter</button>
+            <button class="add-section-btn" id="add-chapter"><i data-lucide="plus"></i> Add Chapter</button>
           </div>
           <div class="navigator-section">
             <div class="section-title">Back Matter</div>
           </div>
-          <button class="add-section-btn" id="add-section">+ Add Section</button>
+          <button class="add-section-btn" id="add-section"><i data-lucide="plus"></i> Add Section</button>
         </div>
       </aside>
 
@@ -98,9 +137,9 @@
           </div>
           <div class="toolbar-divider"></div>
           <div class="toolbar-group">
-            <button class="toolbar-btn" id="bold-btn" title="Bold">B</button>
-            <button class="toolbar-btn" id="italic-btn" title="Italic">I</button>
-            <button class="toolbar-btn" id="underline-btn" title="Underline">U</button>
+            <button class="toolbar-btn" id="bold-btn" title="Bold"><i data-lucide="bold"></i></button>
+            <button class="toolbar-btn" id="italic-btn" title="Italic"><i data-lucide="italic"></i></button>
+            <button class="toolbar-btn" id="underline-btn" title="Underline"><i data-lucide="underline"></i></button>
           </div>
           <div class="toolbar-divider"></div>
           <div class="toolbar-group">
@@ -116,21 +155,21 @@
           </div>
           <div class="toolbar-divider"></div>
           <div class="toolbar-group">
-            <button class="toolbar-btn" id="align-left" title="Align Left">◀</button>
-            <button class="toolbar-btn" id="align-center" title="Align Center">▬</button>
-            <button class="toolbar-btn" id="align-right" title="Align Right">▶</button>
-            <button class="toolbar-btn" id="align-justify" title="Justify">▮</button>
+            <button class="toolbar-btn" id="align-left" title="Align Left"><i data-lucide="align-left"></i></button>
+            <button class="toolbar-btn" id="align-center" title="Align Center"><i data-lucide="align-center"></i></button>
+            <button class="toolbar-btn" id="align-right" title="Align Right"><i data-lucide="align-right"></i></button>
+            <button class="toolbar-btn" id="align-justify" title="Justify"><i data-lucide="align-justify"></i></button>
           </div>
           <div class="toolbar-divider"></div>
           <div class="toolbar-group">
-            <button class="toolbar-btn" id="bullets" title="Bullets">•</button>
-            <button class="toolbar-btn" id="numbers" title="Numbers">1.</button>
+            <button class="toolbar-btn" id="bullets" title="Bullets"><i data-lucide="list"></i></button>
+            <button class="toolbar-btn" id="numbers" title="Numbers"><i data-lucide="list-ordered"></i></button>
           </div>
           <div class="toolbar-divider"></div>
           <div class="toolbar-group">
-            <button class="toolbar-btn" id="insert-image" title="Insert Image">🖼</button>
-            <button class="toolbar-btn" id="insert-drawing" title="Drawing">✏</button>
-            <button class="toolbar-btn" id="insert-table" title="Table">▦</button>
+            <button class="toolbar-btn" id="insert-image" title="Insert Image"><i data-lucide="image-plus"></i></button>
+            <button class="toolbar-btn" id="insert-drawing" title="Drawing"><i data-lucide="pen-tool"></i></button>
+            <button class="toolbar-btn" id="insert-table" title="Table"><i data-lucide="table"></i></button>
           </div>
         </div>
 
@@ -269,6 +308,7 @@
         </div>
       </aside>
     </div>
+    </div>
   </div>
 
   <div id="preview-modal" class="modal" style="display: none;">
@@ -276,7 +316,7 @@
     <div class="modal-content modal-wide">
       <div class="modal-header">
         <h2>Preview</h2>
-        <button class="modal-close" data-close="preview-modal">&times;</button>
+        <button class="modal-close" data-close="preview-modal" aria-label="Close"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
         <article class="preview-book" id="preview-content"></article>

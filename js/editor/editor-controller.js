@@ -1,5 +1,6 @@
 import { api } from '../core/api.js';
-import { requireAuth } from '../core/guard.js';
+import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
+import { initUI, markReady } from '../core/ui.js';
 
 const params = new URLSearchParams(location.search);
 const projectId = params.get('projectId');
@@ -636,10 +637,21 @@ function wireEditingBehaviour() {
 /* ---------- Init ---------- */
 
 async function init() {
+  initUI();
+
   if (!requireAuth()) return;
   if (!projectId) {
     location.replace('dashboard.html');
     return;
+  }
+
+  wireSignOut();
+  const user = currentUser();
+  if (user) {
+    const nameEl = document.getElementById('user-name');
+    const emailEl = document.getElementById('user-email');
+    if (nameEl) nameEl.textContent = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Writer';
+    if (emailEl) emailEl.textContent = user.email || '';
   }
 
   try {
@@ -667,6 +679,7 @@ async function init() {
   wirePreview();
   wireSearch();
   wireEditingBehaviour();
+  wireEditorNav();
   renderNavigator();
 
   if (state.documents.length > 0) {
@@ -674,6 +687,22 @@ async function init() {
     selectDocument(sorted[0].id);
   } else {
     setSaveStatus('No chapters', 'status-unsaved');
+  }
+
+  markReady();
+}
+
+function wireEditorNav() {
+  const chaptersNav = document.getElementById('editor-nav-chapters');
+  if (chaptersNav) {
+    chaptersNav.addEventListener('click', (event) => {
+      event.preventDefault();
+      const sidebar = document.getElementById('editor-sidebar');
+      if (sidebar && sidebar.classList.contains('collapsed')) {
+        sidebar.classList.remove('collapsed');
+        window.dispatchEvent(new Event('resize'));
+      }
+    });
   }
 }
 

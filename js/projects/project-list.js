@@ -1,6 +1,7 @@
 import { api, ApiError } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
 import { signOut } from '../auth/auth-service.js';
+import { initUI, refreshIcons, markReady } from '../core/ui.js';
 
 const state = {
   projects: [],
@@ -44,7 +45,7 @@ function projectCard(project) {
         <h3 class="project-card-title">${escapeHtml(project.title)}</h3>
         <p class="project-card-author">${escapeHtml(project.author_name || '')}</p>
         <div class="project-card-meta">
-          <span>${(project.word_count || 0).toLocaleString()} words</span>
+          <span><i data-lucide="file-text"></i> ${(project.word_count || 0).toLocaleString()} words</span>
           <span>${formatDate(project.updated_at)}</span>
         </div>
         ${progress != null ? `<div class="project-progress"><div class="project-progress-bar" style="width:${progress}%"></div></div>` : ''}
@@ -154,6 +155,8 @@ async function loadProjects() {
     render();
   } catch (err) {
     renderEmpty(document.getElementById('projects-list'), err.message || 'Could not load projects', null);
+  } finally {
+    markReady();
   }
 }
 
@@ -430,6 +433,8 @@ function wireSidebarNav() {
 function init() {
   const session = requireAuth();
   if (!session) return;
+
+  initUI();
 
   const user = currentUser();
   const nameEl = document.getElementById('user-name');

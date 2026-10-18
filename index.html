@@ -3,23 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Re-EL Scribbler - a professional book writing platform.">
   <title>Re-EL Scribbler</title>
+  <link rel="preconnect" href="https://re-el-scribbler.vercel.app" crossorigin>
+  <link rel="dns-prefetch" href="https://ptqinzavcrvnhqexkxik.supabase.co">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="modulepreload" href="js/core/ui.js">
+  <link rel="modulepreload" href="vendor/lucide-subset.js">
 </head>
 <body>
+  <div id="app-loader" role="status" aria-live="polite" aria-label="Loading Re-EL Scribbler">
+    <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="" class="app-loader-logo" fetchpriority="high">
+    <div class="app-loader-spinner"></div>
+    <p class="app-loader-text">Re-EL Scribbler</p>
+  </div>
+
   <div id="app">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 2rem; background: var(--color-background-grey);">
-      <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler Logo" style="max-width: 280px; height: auto; border-radius: var(--radius-lg);">
-      <h1 style="color: var(--color-black); font-size: 3rem; margin: 0;">Re-EL Scribbler</h1>
-      <p style="color: var(--color-slate-grey); font-size: 1.125rem; text-align: center; max-width: 40ch; line-height: 1.6;">
+    <div class="landing">
+      <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler Logo" class="landing-logo" fetchpriority="high">
+      <h1 class="landing-title">Re-EL Scribbler</h1>
+      <p class="landing-subtitle">
         Write freely. Organise intelligently. Design beautifully. Publish confidently.
       </p>
-      <div style="display: flex; gap: 1rem;">
-        <a href="login.html" class="btn btn-primary">Get Started</a>
-        <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+      <div class="landing-actions">
+        <a href="login.html" class="btn btn-primary btn-with-icon">
+          <i data-lucide="book-open"></i><span>Get Started</span>
+        </a>
+        <a href="dashboard.html" class="btn btn-secondary btn-with-icon">
+          <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+        </a>
       </div>
     </div>
   </div>

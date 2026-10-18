@@ -1,4 +1,5 @@
 import { CONFIG } from '../config.js';
+import { initUI, markReady } from '../core/ui.js';
 
 const STORAGE_KEY = 'scribbler.session';
 
@@ -135,6 +136,9 @@ function initAuthPages() {
   const registerForm = document.getElementById('register-form');
 
   if (!loginForm && !registerForm) return;
+
+  initUI();
+  markReady();
 
   if (isAuthenticated()) {
     location.replace('dashboard.html');

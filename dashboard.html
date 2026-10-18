@@ -4,44 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Re-EL Scribbler</title>
+  <link rel="preconnect" href="https://re-el-scribbler.vercel.app" crossorigin>
+  <link rel="dns-prefetch" href="https://ptqinzavcrvnhqexkxik.supabase.co">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="modulepreload" href="js/core/ui.js">
+  <link rel="modulepreload" href="vendor/lucide-subset.js">
 </head>
 <body>
+  <div id="app-loader" role="status" aria-live="polite" aria-label="Loading">
+    <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="" class="app-loader-logo" fetchpriority="high">
+    <div class="app-loader-spinner"></div>
+    <p class="app-loader-text">Re-EL Scribbler</p>
+  </div>
   <div class="app-layout">
-    <aside class="sidebar">
+    <aside class="sidebar app-sidebar" id="dashboard-sidebar">
       <div class="sidebar-header">
         <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="sidebar-logo">
         <h2>Re-EL Scribbler</h2>
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle sidebar" aria-expanded="true">
+          <i data-lucide="panel-left"></i>
+        </button>
       </div>
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item active">Dashboard</a>
-        <a href="#my-books" class="nav-item">My Books</a>
-        <a href="#recent" class="nav-item">Recent Documents</a>
-        <a href="#templates" class="nav-item">Templates</a>
-        <a href="#assets" class="nav-item">Asset Library</a>
-        <a href="#trash" class="nav-item">Recycle Bin</a>
-        <a href="#settings" class="nav-item">Settings</a>
-        <a href="#help" class="nav-item">Help & Shortcuts</a>
+        <a href="dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        <a href="#my-books" class="nav-item"><i data-lucide="library"></i><span class="nav-label">My Books</span></a>
+        <a href="#recent" class="nav-item"><i data-lucide="file-text"></i><span class="nav-label">Recent Documents</span></a>
+        <a href="#templates" class="nav-item"><i data-lucide="layout-template"></i><span class="nav-label">Templates</span></a>
+        <a href="#assets" class="nav-item"><i data-lucide="image"></i><span class="nav-label">Asset Library</span></a>
+        <a href="#trash" class="nav-item"><i data-lucide="trash-2"></i><span class="nav-label">Recycle Bin</span></a>
+        <a href="#settings" class="nav-item"><i data-lucide="settings"></i><span class="nav-label">Settings</span></a>
+        <a href="#help" class="nav-item"><i data-lucide="circle-help"></i><span class="nav-label">Help & Shortcuts</span></a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <span class="sidebar-user-name" id="user-name">Writer</span>
           <span class="sidebar-user-email" id="user-email"></span>
         </div>
-        <button id="new-book-btn" class="btn btn-primary btn-full">+ New Book</button>
-        <button id="sign-out-btn" class="btn btn-secondary btn-full" data-action="sign-out">Sign Out</button>
+        <button id="new-book-btn" class="btn btn-primary btn-full btn-with-icon">
+          <i data-lucide="plus"></i><span class="btn-label">New Book</span>
+        </button>
+        <button id="sign-out-btn" class="btn btn-secondary btn-full btn-with-icon" data-action="sign-out">
+          <i data-lucide="log-out"></i><span class="btn-label">Sign Out</span>
+        </button>
       </div>
     </aside>
     <main class="main-content">
       <header class="content-header">
         <h1>Dashboard</h1>
         <div class="header-actions">
-          <button class="btn btn-secondary" id="import-project-btn">Import Project</button>
-          <button class="btn btn-primary" id="new-book-btn-header">New Book</button>
+          <button class="btn btn-secondary btn-with-icon" id="import-project-btn">
+            <i data-lucide="upload"></i><span class="btn-label">Import Project</span>
+          </button>
+          <button class="btn btn-primary btn-with-icon" id="new-book-btn-header">
+            <i data-lucide="plus"></i><span class="btn-label">New Book</span>
+          </button>
         </div>
       </header>
 

@@ -4,30 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Re-EL Scribbler</title>
+  <link rel="preconnect" href="https://re-el-scribbler.vercel.app" crossorigin>
+  <link rel="dns-prefetch" href="https://ptqinzavcrvnhqexkxik.supabase.co">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="modulepreload" href="js/core/ui.js">
+  <link rel="modulepreload" href="vendor/lucide-subset.js">
 </head>
 <body>
+  <div id="app-loader" role="status" aria-live="polite" aria-label="Loading">
+    <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="" class="app-loader-logo" fetchpriority="high">
+    <div class="app-loader-spinner"></div>
+    <p class="app-loader-text">Re-EL Scribbler</p>
+  </div>
   <div class="auth-page">
     <div class="auth-card">
       <div class="auth-header">
-        <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="auth-logo">
+        <img src="assets/logos/Re-EL Scribbler Logo Badge.png" alt="Re-EL Scribbler" class="auth-logo" fetchpriority="high">
         <h1>Welcome back</h1>
         <p>Sign in to continue writing</p>
       </div>
       <form id="login-form" class="auth-form">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
+          <input type="email" id="email" name="email" autocomplete="email" required>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        <button type="submit" class="btn btn-primary btn-full btn-with-icon">
+          <i data-lucide="log-in"></i><span>Sign In</span>
+        </button>
       </form>
       <div class="auth-footer">
         <p>Don't have an account? <a href="register.html">Sign up</a></p>

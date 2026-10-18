@@ -1,4 +1,5 @@
 import { isAuthenticated } from './auth/auth-service.js';
+import { initUI, refreshIcons, markReady } from './core/ui.js';
 
 function initLanding() {
   const primary = document.querySelector('a[href="login.html"].btn-primary');
@@ -7,20 +8,27 @@ function initLanding() {
   if (isAuthenticated()) {
     if (primary) {
       primary.href = 'dashboard.html';
-      primary.textContent = 'Open Dashboard';
+      primary.querySelector('span').textContent = 'Open Dashboard';
     }
     if (dashboard) {
       dashboard.href = 'dashboard.html';
-      dashboard.textContent = 'My Books';
+      dashboard.querySelector('span').textContent = 'My Books';
     }
   } else if (dashboard) {
     dashboard.href = 'login.html';
-    dashboard.textContent = 'Sign In';
+    dashboard.querySelector('span').textContent = 'Sign In';
   }
+  refreshIcons(primary?.parentElement || document);
+}
+
+function init() {
+  initUI();
+  initLanding();
+  markReady();
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initLanding);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-  initLanding();
+  init();
 }

@@ -2,6 +2,7 @@ import { api, ApiError } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
 import { signOut } from '../auth/auth-service.js';
 import { initUI, refreshIcons, markReady } from '../core/ui.js';
+import { toast } from '../core/toast.js';
 const state = {
   projects: [],
   filter: 'all',
@@ -47,6 +48,7 @@ function projectCard(project) {
           <span><i data-lucide="file-text"></i> ${(project.word_count || 0).toLocaleString()} words</span>
           <span>${formatDate(project.updated_at)}</span>
         </div>
+        ${project.target_word_count ? `<div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar ${progressCls(project.word_count||0, project.target_word_count)}" style="width:${Math.min(100, ((project.word_count||0)/project.target_word_count)*100)}%"></div></div><span style="font-size:.75rem;color:var(--color-slate-grey)">${Math.round(((project.word_count||0)/project.target_word_count)*100)}% of ${(project.target_word_count||0).toLocaleString()}</span></div>` : ''}
         ${progress != null ? `<div class="project-progress"><div class="project-progress-bar" style="width:${progress}%"></div></div>` : ''}
       </div>
     </article>
@@ -149,6 +151,11 @@ function closeWizard() {
 }
 
 async function loadProjects() {
+  const listEl = document.getElementById('projects-list');
+  if (listEl) {
+    listEl.innerHTML = '<div class="skeleton-card"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line md"></div><div class="skeleton skeleton-line xs"></div></div>'.repeat(3);
+    refreshIcons(listEl);
+  }
   try {
     const data = await api('/projects');
     state.projects = data.projects || [];
@@ -190,7 +197,7 @@ function wireWizard() {
     } catch (err) {
       submitButton.disabled = false;
       if (label) label.textContent = 'Create Book';
-      alert(err instanceof ApiError ? err.message : 'Could not create the book');
+      toast(err instanceof ApiError ? err.message : 'Could not create the book', 'error');
     }
   });
 }
@@ -268,7 +275,7 @@ function wireImport() {
   confirm.addEventListener('click', async () => {
     const file = input.files[0];
     if (!file) {
-      alert('Choose a file to import first.');
+      toast('Choose a file to import first.', 'warning');
       return;
     }
     confirm.disabled = true;
@@ -280,7 +287,7 @@ function wireImport() {
     } catch (err) {
       confirm.disabled = false;
       if (confirmLabel) confirmLabel.textContent = 'Import';
-      alert(err.message || 'Import failed.');
+      toast(err.message || 'Import failed.', 'error');
     }
   });
 }

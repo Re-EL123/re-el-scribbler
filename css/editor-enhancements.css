@@ -1,0 +1,178 @@
+
+/* Zen mode */
+body.zen .editor-topbar,
+body.zen .app-sidebar,
+body.zen .project-navigator,
+body.zen .properties-inspector {
+  display: none !important;
+}
+
+body.zen .editor-shell,
+body.zen .editor-layout,
+body.zen .editor-main,
+body.zen .canvas-area {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.zen .canvas-container {
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 2rem;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.16) 25%, rgba(148, 163, 184, 0.32) 37%, rgba(148, 163, 184, 0.16) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+}
+
+.skeleton-line {
+  height: 12px;
+  width: 100%;
+}
+
+.skeleton-line.sm { width: 60%; }
+.skeleton-line.xs { width: 40%; }
+.skeleton-line.md { width: 80%; }
+
+/* Progress bar */
+.progress-wrap {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--color-deep-sky-blue);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.progress-bar.warn { background: #f59e0b; }
+.progress-bar.danger { background: #dc2626; }
+.progress-bar.ok { background: #16a34a; }
+
+/* Draggable/resizable media */
+.media-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  user-select: none;
+}
+
+.media-wrapper.selected {
+  outline: 2px solid var(--color-deep-sky-blue);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.media {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.media-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-white);
+  border: 2px solid var(--color-deep-sky-blue);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  touch-action: none;
+}
+
+.media-wrapper.selected .media-handle {
+  display: block;
+}
+
+.media-handle.br { right: 0; bottom: 0; cursor: nwse-resize; }
+.media-handle.bl { left: 0; bottom: 0; cursor: nesw-resize; }
+.media-handle.tr { right: 0; top: 0; cursor: nesw-resize; }
+.media-handle.tl { left: 0; top: 0; cursor: nwse-resize; }
+.media-handle.move { left: 50%; top: 0; cursor: move; margin-top: -16px; }
+
+/* Selection bubble */
+.selection-bubble {
+  position: fixed;
+  z-index: 99998;
+  display: none;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 0.4rem;
+  gap: 0.25rem;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+}
+
+.selection-bubble.show { display: flex; }
+.selection-bubble .bubble-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-light-grey);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.selection-bubble .bubble-btn:hover { background: rgba(255,255,255,0.12); color: var(--color-white); }
+
+.selection-panel {
+  position: fixed;
+  z-index: 99998;
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 30px 70px rgba(15, 23, 42, 0.3);
+  padding: 0.75rem;
+  width: min(90vw, 320px);
+  max-height: 40vh;
+  overflow: auto;
+}
+
+.selection-panel.show { display: flex; }
+.selection-panel textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.selection-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }

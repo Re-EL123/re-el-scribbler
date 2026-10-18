@@ -1,6 +1,10 @@
 import { api } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
 import { initUI, refreshIcons, markReady } from '../core/ui.js';
+import { toast } from '../core/toast.js';
+import { initMediaManager } from '../core/media-manager.js';
+import { initSelectionBubble } from '../core/selection-bubble.js';
+import { initFindReplace } from '../core/find-replace.js';
 
 const params = new URLSearchParams(location.search);
 const projectId = params.get('projectId');
@@ -528,7 +532,7 @@ function wireStructure() {
       renderNavigator();
       selectDocument(doc.id);
     } catch (err) {
-      alert(err.message);
+      toast(err.message, 'error');
     }
   };
 
@@ -549,7 +553,7 @@ function wireTitle() {
       document.getElementById('book-title').textContent = project.title;
       document.title = `${project.title} - Re-EL Scribbler`;
     } catch (err) {
-      alert(err.message);
+      toast(err.message, 'error');
     }
   });
 }
@@ -572,7 +576,7 @@ function wireExport() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      alert(err.message);
+      toast(err.message, 'error');
     }
   });
 }
@@ -663,7 +667,7 @@ async function init() {
     state.sections = data.structure.sections || [];
     state.documents = data.structure.documents || [];
   } catch (err) {
-    alert(err.message);
+    toast(err.message, 'error');
     location.replace('dashboard.html');
     return;
   }
@@ -681,8 +685,10 @@ async function init() {
   wireExport();
   wirePreview();
   wireSearch();
+  try { initFindReplace(document.getElementById('search-bar'), document.getElementById('search-input'), document.getElementById('search-prev'), document.getElementById('search-next'), document.getElementById('search-close')); } catch(e) {}
   wireEditingBehaviour();
   wireEditorNav();
+  wireZen();
   renderNavigator();
 
   if (state.documents.length > 0) {
@@ -692,6 +698,16 @@ async function init() {
     setSaveStatus('No chapters', 'status-unsaved');
   }
 
+  initMediaManager(contentEl());
+  initSelectionBubble(contentEl(), async (payload) => {
+    try {
+      const res = await api('/assistant', { method: 'POST', body: payload });
+      return res;
+    } catch (e) {
+      toast(e.message || 'AI not available', 'error');
+      return { result: '' };
+    }
+  });
   markReady();
 }
 
@@ -713,4 +729,17 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+
+function wireZen() {
+  const btn = document.getElementById('zen-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('zen');
+    const zen = document.body.classList.contains('zen');
+    try { localStorage.setItem('scribbler.zen', zen ? '1' : '0'); } catch (e) {}
+  });
+  try {
+    if (localStorage.getItem('scribbler.zen') === '1') document.body.classList.add('zen');
+  } catch (e) {}
 }

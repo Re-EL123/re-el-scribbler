@@ -734,12 +734,21 @@ if (document.readyState === 'loading') {
 function wireZen() {
   const btn = document.getElementById('zen-btn');
   if (!btn) return;
-  btn.addEventListener('click', () => {
-    document.body.classList.toggle('zen');
-    const zen = document.body.classList.contains('zen');
+  const icon = btn.querySelector('i[data-lucide]');
+  function applyZen(zen) {
+    document.body.classList.toggle('zen', zen);
     try { localStorage.setItem('scribbler.zen', zen ? '1' : '0'); } catch (e) {}
+    if (icon) icon.setAttribute('data-lucide', zen ? 'minimize-2' : 'maximize-2');
+    refreshIcons(btn);
+    btn.setAttribute('aria-pressed', String(zen));
+  }
+  btn.addEventListener('click', () => applyZen(!document.body.classList.contains('zen')));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('zen')) {
+      applyZen(false);
+    }
   });
   try {
-    if (localStorage.getItem('scribbler.zen') === '1') document.body.classList.add('zen');
+    if (localStorage.getItem('scribbler.zen') === '1') applyZen(true);
   } catch (e) {}
 }

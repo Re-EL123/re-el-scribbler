@@ -66,6 +66,7 @@ const NAMES = [
   'highlighter',
   'minus',
   'maximize-2',
+  'minimize-2',
   'columns-3'
 ];
 

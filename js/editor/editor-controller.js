@@ -1,6 +1,6 @@
 import { api } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
-import { initUI, markReady } from '../core/ui.js';
+import { initUI, refreshIcons, markReady } from '../core/ui.js';
 
 const params = new URLSearchParams(location.search);
 const projectId = params.get('projectId');
@@ -110,10 +110,13 @@ function renderNavigator() {
     .map(
       (doc) => `
       <div class="chapter-item ${doc.id === state.activeDocId ? 'active' : ''}" data-doc-id="${doc.id}">
+        <i data-lucide="file-text"></i>
         <span class="chapter-name">${escapeHtml(doc.title)}</span>
       </div>`
     )
     .join('');
+
+  refreshIcons(chapterList);
 
   chapterList.querySelectorAll('.chapter-item[data-doc-id]').forEach((item) => {
     item.addEventListener('click', () => selectDocument(item.dataset.docId));

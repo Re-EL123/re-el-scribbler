@@ -202,13 +202,13 @@
 
       <aside class="properties-inspector">
         <div class="inspector-tabs">
-          <button class="inspector-tab active" data-tab="page">Page</button>
-          <button class="inspector-tab" data-tab="text">Text</button>
-          <button class="inspector-tab" data-tab="image">Image</button>
-          <button class="inspector-tab" data-tab="drawing">Drawing</button>
+          <button class="inspector-tab active" data-tab="page"><i data-lucide="layout-template"></i> Page</button>
+          <button class="inspector-tab" data-tab="text"><i data-lucide="type"></i> Text</button>
+          <button class="inspector-tab" data-tab="image"><i data-lucide="image"></i> Image</button>
+          <button class="inspector-tab" data-tab="drawing"><i data-lucide="pen-tool"></i> Drawing</button>
         </div>
         <div class="inspector-content" id="inspector-page">
-          <h4>Page Settings</h4>
+          <h4><i data-lucide="layout-template"></i> Page Settings</h4>
           <div class="form-group">
             <label>Page Size</label>
             <select class="form-control">
@@ -237,7 +237,7 @@
         </div>
 
         <div class="inspector-content" id="inspector-text" style="display: none;">
-          <h4>Text</h4>
+          <h4><i data-lucide="type"></i> Text</h4>
           <div class="form-group">
             <label for="text-font">Font Family</label>
             <select class="form-control" id="text-font">
@@ -264,21 +264,21 @@
           <div class="form-group">
             <label>Alignment</label>
             <div class="inspector-btn-row">
-              <button class="toolbar-btn" data-align="justifyLeft" title="Left">◀</button>
-              <button class="toolbar-btn" data-align="justifyCenter" title="Center">▬</button>
-              <button class="toolbar-btn" data-align="justifyRight" title="Right">▶</button>
-              <button class="toolbar-btn" data-align="justifyFull" title="Justify">▮</button>
+              <button class="toolbar-btn" data-align="justifyLeft" title="Left"><i data-lucide="align-left"></i></button>
+              <button class="toolbar-btn" data-align="justifyCenter" title="Center"><i data-lucide="align-center"></i></button>
+              <button class="toolbar-btn" data-align="justifyRight" title="Right"><i data-lucide="align-right"></i></button>
+              <button class="toolbar-btn" data-align="justifyFull" title="Justify"><i data-lucide="align-justify"></i></button>
             </div>
           </div>
         </div>
 
         <div class="inspector-content" id="inspector-image" style="display: none;">
-          <h4>Image</h4>
+          <h4><i data-lucide="image"></i> Image</h4>
           <div class="form-group">
             <label for="image-url">Image URL</label>
             <input type="url" class="form-control" id="image-url" placeholder="https://...">
           </div>
-          <button class="btn btn-primary btn-full" id="image-insert-url">Insert from URL</button>
+          <button class="btn btn-primary btn-full btn-with-icon" id="image-insert-url"><i data-lucide="image-plus"></i> Insert from URL</button>
           <div class="form-group">
             <label for="image-upload">Upload Image</label>
             <input type="file" id="image-upload" accept="image/*" class="form-control">
@@ -291,7 +291,7 @@
         </div>
 
         <div class="inspector-content" id="inspector-drawing" style="display: none;">
-          <h4>Drawing</h4>
+          <h4><i data-lucide="pen-tool"></i> Drawing</h4>
           <div class="form-group">
             <label for="draw-color">Brush Colour</label>
             <input type="color" id="draw-color" value="#111827">
@@ -302,8 +302,8 @@
           </div>
           <canvas id="draw-canvas" width="240" height="180" class="draw-canvas"></canvas>
           <div class="inspector-btn-row">
-            <button class="btn btn-secondary" id="draw-clear">Clear</button>
-            <button class="btn btn-primary" id="draw-insert">Insert</button>
+            <button class="btn btn-secondary btn-with-icon" id="draw-clear"><i data-lucide="trash-2"></i> Clear</button>
+            <button class="btn btn-primary btn-with-icon" id="draw-insert"><i data-lucide="check"></i> Insert</button>
           </div>
         </div>
       </aside>

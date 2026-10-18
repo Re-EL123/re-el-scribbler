@@ -2,7 +2,6 @@ import { api, ApiError } from '../core/api.js';
 import { requireAuth, wireSignOut, currentUser } from '../core/guard.js';
 import { signOut } from '../auth/auth-service.js';
 import { initUI, refreshIcons, markReady } from '../core/ui.js';
-
 const state = {
   projects: [],
   filter: 'all',
@@ -132,6 +131,7 @@ function openPanel(title, bodyHtml, afterRender) {
   document.getElementById('panel-title').textContent = title;
   const body = document.getElementById('panel-body');
   body.innerHTML = bodyHtml;
+  refreshIcons(body);
   openModal('panel-modal');
   if (afterRender) afterRender(body);
 }
@@ -171,8 +171,9 @@ function wireWizard() {
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    const label = document.getElementById('wizard-submit-label');
     submitButton.disabled = true;
-    submitButton.textContent = 'Creating...';
+    if (label) label.textContent = 'Creating...';
     try {
       const payload = {
         title: document.getElementById('book-title').value.trim(),
@@ -188,7 +189,7 @@ function wireWizard() {
       location.href = `editor.html?projectId=${data.project.id}`;
     } catch (err) {
       submitButton.disabled = false;
-      submitButton.textContent = 'Create Book';
+      if (label) label.textContent = 'Create Book';
       alert(err instanceof ApiError ? err.message : 'Could not create the book');
     }
   });
@@ -271,13 +272,14 @@ function wireImport() {
       return;
     }
     confirm.disabled = true;
-    confirm.textContent = 'Importing...';
+    const confirmLabel = document.getElementById('import-confirm-label');
+    if (confirmLabel) confirmLabel.textContent = 'Importing...';
     try {
       const projectId = await importProject(file);
       location.href = `editor.html?projectId=${projectId}`;
     } catch (err) {
       confirm.disabled = false;
-      confirm.textContent = 'Import';
+      if (confirmLabel) confirmLabel.textContent = 'Import';
       alert(err.message || 'Import failed.');
     }
   });
@@ -333,19 +335,22 @@ function navTo(hash, updateActive = true) {
 
 function showTemplates() {
   const templates = [
-    { id: 'blank', name: 'Blank', desc: 'Start from a clean slate.' },
-    { id: 'novel', name: 'Novel', desc: 'Chapter-based fiction layout.' },
-    { id: 'business', name: 'Business Book', desc: 'Structured, professional layout.' },
-    { id: 'academic', name: 'Academic Book', desc: 'Citations and references ready.' },
-    { id: 'workbook', name: 'Workbook', desc: 'Exercises and worksheets.' }
+    { id: 'blank', name: 'Blank', desc: 'Start from a clean slate.', icon: 'file-text' },
+    { id: 'novel', name: 'Novel', desc: 'Chapter-based fiction layout.', icon: 'book-open' },
+    { id: 'business', name: 'Business Book', desc: 'Structured, professional layout.', icon: 'type' },
+    { id: 'academic', name: 'Academic Book', desc: 'Citations and references ready.', icon: 'library' },
+    { id: 'workbook', name: 'Workbook', desc: 'Exercises and worksheets.', icon: 'pencil' }
   ];
   openPanel(
     'Templates',
     `<div class="panel-list">${templates
       .map(
         (t) => `<button class="panel-item" data-template="${t.id}">
-          <span class="panel-item-name">${t.name}</span>
-          <span class="panel-item-desc">${t.desc}</span>
+          <i data-lucide="${t.icon}"></i>
+          <span class="panel-item-text">
+            <span class="panel-item-name">${t.name}</span>
+            <span class="panel-item-desc">${t.desc}</span>
+          </span>
         </button>`
       )
       .join('')}</div>`,
@@ -364,14 +369,14 @@ function showTemplates() {
 function showAssets() {
   openPanel(
     'Asset Library',
-    `<p class="panel-empty">Assets belong to individual books. Open a book and use the Image or Drawing tools in the editor to add images.</p>`
+    `<p class="panel-empty"><i data-lucide="image"></i> Assets belong to individual books. Open a book and use the Image or Drawing tools in the editor to add images.</p>`
   );
 }
 
 function showTrash() {
   openPanel(
     'Recycle Bin',
-    `<p class="panel-empty">Deleted books are removed from your dashboard. There are no deleted books to restore.</p>`
+    `<p class="panel-empty"><i data-lucide="trash-2"></i> Deleted books are removed from your dashboard. There are no deleted books to restore.</p>`
   );
 }
 
@@ -379,9 +384,9 @@ function showSettings() {
   const user = currentUser() || {};
   openPanel(
     'Settings',
-    `<div class="panel-field"><span class="panel-label">Name</span><span>${escapeHtml(user.display_name || 'Writer')}</span></div>
-     <div class="panel-field"><span class="panel-label">Email</span><span>${escapeHtml(user.email || '')}</span></div>
-     <div class="modal-actions"><button type="button" class="btn btn-secondary" id="settings-signout">Sign Out</button></div>`,
+    `<div class="panel-field"><span class="panel-label"><i data-lucide="user"></i> Name</span><span>${escapeHtml(user.display_name || 'Writer')}</span></div>
+     <div class="panel-field"><span class="panel-label"><i data-lucide="feather"></i> Email</span><span>${escapeHtml(user.email || '')}</span></div>
+     <div class="modal-actions"><button type="button" class="btn btn-secondary btn-with-icon" id="settings-signout"><i data-lucide="log-out"></i> Sign Out</button></div>`,
     (body) => {
       body.querySelector('#settings-signout').addEventListener('click', async () => {
         await signOut();
@@ -393,22 +398,23 @@ function showSettings() {
 
 function showHelp() {
   const shortcuts = [
-    ['Ctrl / Cmd + S', 'Save the current chapter'],
-    ['Ctrl / Cmd + F', 'Find within the chapter'],
-    ['Ctrl / Cmd + B', 'Bold'],
-    ['Ctrl / Cmd + I', 'Italic'],
-    ['Ctrl / Cmd + U', 'Underline'],
-    ['Ctrl / Cmd + Z', 'Undo'],
-    ['Esc', 'Close dialogs']
+    ['Ctrl / Cmd + S', 'Save the current chapter', 'save'],
+    ['Ctrl / Cmd + F', 'Find within the chapter', 'search'],
+    ['Ctrl / Cmd + B', 'Bold', 'bold'],
+    ['Ctrl / Cmd + I', 'Italic', 'italic'],
+    ['Ctrl / Cmd + U', 'Underline', 'underline'],
+    ['Ctrl / Cmd + Z', 'Undo', 'undo-2'],
+    ['Esc', 'Close dialogs', 'x']
   ];
   openPanel(
     'Help & Shortcuts',
     `<div class="panel-list">${shortcuts
       .map(
-        ([key, desc]) => `<div class="panel-field"><span class="panel-label">${key}</span><span>${desc}</span></div>`
+        ([key, desc, icon]) =>
+          `<div class="panel-field"><span class="panel-label"><i data-lucide="${icon}"></i> ${key}</span><span>${desc}</span></div>`
       )
       .join('')}
-     <p class="panel-empty">Need more help? Email <a href="mailto:dev@re-el.com">dev@re-el.com</a>.</p></div>`
+     <p class="panel-empty"><i data-lucide="circle-help"></i> Need more help? Email <a href="mailto:dev@re-el.com">dev@re-el.com</a>.</p></div>`
   );
 }
 

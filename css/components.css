@@ -163,9 +163,9 @@ input:focus, select:focus, textarea:focus {
 
 .panel-item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
   width: 100%;
   text-align: left;
   padding: 0.75rem 1rem;
@@ -174,6 +174,28 @@ input:focus, select:focus, textarea:focus {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.panel-item > .lucide {
+  width: 1.25em;
+  height: 1.25em;
+  color: var(--color-deep-sky-blue);
+  flex-shrink: 0;
+}
+
+.panel-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.panel-label .lucide,
+.panel-empty .lucide {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.35rem;
+  vertical-align: -0.125em;
 }
 
 .panel-item:hover {
@@ -215,4 +237,10 @@ input:focus, select:focus, textarea:focus {
 
 .panel-empty a {
   color: var(--color-deep-sky-blue);
+}
+.inspector-hint .lucide {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.35rem;
+  vertical-align: -0.125em;
 }

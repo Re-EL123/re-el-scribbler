@@ -87,22 +87,22 @@
         <div class="section-header">
           <h2>My Projects</h2>
           <div class="view-toggle">
-            <button class="toggle-btn active" data-view="grid">Grid</button>
-            <button class="toggle-btn" data-view="list">List</button>
+            <button class="toggle-btn active btn-with-icon" data-view="grid"><i data-lucide="layout-grid"></i> Grid</button>
+            <button class="toggle-btn btn-with-icon" data-view="list"><i data-lucide="list"></i> List</button>
           </div>
         </div>
         <div class="project-filters">
-          <button class="filter-btn active" data-filter="all">All Projects</button>
-          <button class="filter-btn" data-filter="in_progress">In Progress</button>
-          <button class="filter-btn" data-filter="draft">Draft Complete</button>
-          <button class="filter-btn" data-filter="review">Ready for Review</button>
-          <button class="filter-btn" data-filter="published">Published</button>
-          <button class="filter-btn" data-filter="archived">Archived</button>
+          <button class="filter-btn active btn-with-icon" data-filter="all"><i data-lucide="layout-grid"></i> All Projects</button>
+          <button class="filter-btn btn-with-icon" data-filter="in_progress"><i data-lucide="loader-circle"></i> In Progress</button>
+          <button class="filter-btn btn-with-icon" data-filter="draft"><i data-lucide="file-text"></i> Draft Complete</button>
+          <button class="filter-btn btn-with-icon" data-filter="review"><i data-lucide="eye"></i> Ready for Review</button>
+          <button class="filter-btn btn-with-icon" data-filter="published"><i data-lucide="check"></i> Published</button>
+          <button class="filter-btn btn-with-icon" data-filter="archived"><i data-lucide="folder-open"></i> Archived</button>
         </div>
         <div id="projects-list" class="projects-grid">
           <div class="project-card empty-state">
             <p>No projects yet</p>
-            <button class="btn btn-primary" id="create-first-book">Create Your First Book</button>
+            <button class="btn btn-primary btn-with-icon" id="create-first-book"><i data-lucide="plus"></i> Create Your First Book</button>
           </div>
         </div>
       </section>
@@ -114,7 +114,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2>Create New Book</h2>
-        <button class="modal-close" id="wizard-close">&times;</button>
+        <button class="modal-close" id="wizard-close" aria-label="Close"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
         <form id="project-wizard-form">
@@ -185,8 +185,8 @@
             </div>
           </div>
           <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" id="wizard-cancel">Cancel</button>
-            <button type="submit" class="btn btn-primary">Create Book</button>
+            <button type="button" class="btn btn-secondary btn-with-icon" id="wizard-cancel"><i data-lucide="x"></i> Cancel</button>
+            <button type="submit" class="btn btn-primary btn-with-icon"><i data-lucide="book-plus"></i> <span id="wizard-submit-label">Create Book</span></button>
           </div>
         </form>
       </div>
@@ -198,7 +198,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="panel-title">Panel</h2>
-        <button class="modal-close" data-close="panel-modal">&times;</button>
+        <button class="modal-close" data-close="panel-modal" aria-label="Close"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body" id="panel-body"></div>
     </div>
@@ -209,14 +209,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2>Import Project</h2>
-        <button class="modal-close" data-close="import-modal">&times;</button>
+        <button class="modal-close" data-close="import-modal" aria-label="Close"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
         <p class="inspector-hint">Import a Re-EL Scribbler JSON export, or an HTML / TXT / Markdown manuscript. It will be added as a new book.</p>
         <input type="file" id="import-file" class="form-control" accept=".json,.html,.htm,.txt,.md">
         <div class="modal-actions">
-          <button type="button" class="btn btn-secondary" data-close="import-modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="import-confirm">Import</button>
+          <button type="button" class="btn btn-secondary btn-with-icon" data-close="import-modal"><i data-lucide="x"></i> Cancel</button>
+          <button type="button" class="btn btn-primary btn-with-icon" id="import-confirm"><i data-lucide="upload"></i> <span id="import-confirm-label">Import</span></button>
         </div>
       </div>
     </div>

@@ -735,12 +735,15 @@ function wireZen() {
   const btn = document.getElementById('zen-btn');
   if (!btn) return;
   const icon = btn.querySelector('i[data-lucide]');
+  const label = btn.querySelector('.btn-label');
   function applyZen(zen) {
     document.body.classList.toggle('zen', zen);
     try { localStorage.setItem('scribbler.zen', zen ? '1' : '0'); } catch (e) {}
     if (icon) icon.setAttribute('data-lucide', zen ? 'minimize-2' : 'maximize-2');
+    if (label) label.textContent = zen ? 'Exit Zen' : 'Zen';
     refreshIcons(btn);
     btn.setAttribute('aria-pressed', String(zen));
+    btn.title = zen ? 'Exit Zen Mode (Esc)' : 'Zen Mode';
   }
   btn.addEventListener('click', () => applyZen(!document.body.classList.contains('zen')));
   document.addEventListener('keydown', (e) => {

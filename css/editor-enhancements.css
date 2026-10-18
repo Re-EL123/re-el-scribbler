@@ -176,3 +176,22 @@ body.zen .canvas-container {
 }
 
 .selection-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+.media-handle.remove {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #dc2626;
+  border: 2px solid #fff;
+  color: #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.media-wrapper.selected .media-handle.remove {
+  display: flex;
+}

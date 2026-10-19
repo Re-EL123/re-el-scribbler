@@ -559,27 +559,51 @@ function wireTitle() {
 }
 
 function wireExport() {
-  document.getElementById('export-btn').addEventListener('click', async () => {
-    try {
-      const { export: data } = await api(`/projects/${projectId}/export`, { params: { format: 'html' } });
-      const body = data.documents.map((d) => d.html).join('\n');
-      const full = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(data.project.title)}</title>
-<style>body{font-family:Georgia,serif;max-width:40rem;margin:2rem auto;padding:0 1rem;line-height:1.8;color:#111827;}img{max-width:100%;}</style>
-</head><body><h1>${escapeHtml(data.project.title)}</h1>${
-        data.project.author_name ? `<p><em>by ${escapeHtml(data.project.author_name)}</em></p>` : ''
-      }${body}</body></html>`;
-      const blob = new Blob([full], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${(data.project.title || 'book').replace(/[^\w\-]+/g, '_')}.html`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      toast(err.message, 'error');
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const modal = document.getElementById('export-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      refreshIcons(modal);
     }
   });
+  document.querySelectorAll('#export-modal [data-export-format]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const fmt = btn.dataset.exportFormat;
+      try {
+        const { export: data } = await api(`/projects/${projectId}/export`, { params: { format: fmt } });
+        if (fmt === 'html') {
+          const body = (data.documents || []).map((d) => d.html).join('\n');
+          const full = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(data.project.title)}</title>
+<style>body{font-family:Georgia,serif;max-width:40rem;margin:2rem auto;padding:0 1rem;line-height:1.8;color:#111827;}img{max-width:100%;}</style>
+</head><body><h1>${escapeHtml(data.project.title)}</h1>${data.project.author_name ? `<p><em>by ${escapeHtml(data.project.author_name)}</em></p>` : ''}${body}</body></html>`;
+          downloadBlob(full, `${safeName(data.project.title)}.html`, 'text/html');
+        } else if (fmt === 'txt') {
+          const text = (data.documents || []).map((d) => stripHtml(d.html)).join('\n\n');
+          downloadBlob(text, `${safeName(data.project.title)}.txt`, 'text/plain');
+        } else if (fmt === 'md') {
+          const md = (data.documents || []).map((d) => stripHtmlToMd(d.html)).join('\n\n');
+          downloadBlob(md, `${safeName(data.project.title)}.md`, 'text/markdown');
+        }
+        const modal = document.getElementById('export-modal');
+        if (modal) modal.style.display = 'none';
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    });
+  });
 }
+
+function safeName(t){ return (t || 'book').replace(/[^\w\-]+/g, '_'); }
+function downloadBlob(content, filename, type){
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function stripHtml(h){ return String(h||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim(); }
+function stripHtmlToMd(h){ return stripHtml(h); }
+
 
 /* ---------- Keyboard / focus ---------- */
 

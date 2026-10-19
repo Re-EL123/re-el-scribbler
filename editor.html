@@ -326,6 +326,22 @@
     </div>
   </div>
 
+  <div id="export-modal" class="modal" style="display:none">
+    <div class="modal-backdrop" data-close="export-modal"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Export</h2>
+        <button class="modal-close" data-close="export-modal" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem">
+        <div class="panel-list">
+          <button class="panel-item" data-export-format="html"><span class="panel-item-text"><span class="panel-item-name">HTML</span><span class="panel-item-desc">Web-ready single file</span></span></button>
+          <button class="panel-item" data-export-format="txt"><span class="panel-item-text"><span class="panel-item-name">Plain Text</span><span class="panel-item-desc">Extract body text</span></span></button>
+          <button class="panel-item" data-export-format="md"><span class="panel-item-text"><span class="panel-item-name">Markdown</span><span class="panel-item-desc">Simple .md file</span></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script type="module" src="js/editor/editor-controller.js"></script>
 </body>
 </html>

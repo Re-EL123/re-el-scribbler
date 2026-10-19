@@ -713,6 +713,7 @@ async function init() {
   wireEditingBehaviour();
   wireEditorNav();
   wireZen();
+  editorModalClose();
   renderNavigator();
 
   if (state.documents.length > 0) {
@@ -778,4 +779,14 @@ function wireZen() {
   try {
     if (localStorage.getItem('scribbler.zen') === '1') applyZen(true);
   } catch (e) {}
+}
+
+function editorModalClose() {
+  document.querySelectorAll('[data-close]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.close;
+      const m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+    });
+  });
 }

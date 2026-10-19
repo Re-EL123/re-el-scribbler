@@ -5,6 +5,7 @@ import { toast } from '../core/toast.js';
 import { initMediaManager } from '../core/media-manager.js';
 import { initSelectionBubble } from '../core/selection-bubble.js';
 import { initFindReplace } from '../core/find-replace.js';
+import { htmlToDocxBlob } from '../../vendor/html-to-docx-lite.js';
 
 const params = new URLSearchParams(location.search);
 const projectId = params.get('projectId');
@@ -583,6 +584,27 @@ function wireExport() {
         } else if (fmt === 'md') {
           const md = (data.documents || []).map((d) => stripHtmlToMd(d.html)).join('\n\n');
           downloadBlob(md, `${safeName(data.project.title)}.md`, 'text/markdown');
+        } else if (fmt === 'pdf') {
+          const body = (data.documents || []).map((d) => d.html).join('\n');
+          const full = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(data.project.title)}</title>
+<style>body{font-family:Georgia,serif;max-width:40rem;margin:2rem auto;padding:1rem;line-height:1.8;color:#111827;}img{max-width:100%;page-break-inside:avoid;}table{page-break-inside:avoid;}</style>
+</head><body><h1>${escapeHtml(data.project.title)}</h1>${data.project.author_name ? `<p><em>by ${escapeHtml(data.project.author_name)}</em></p>` : ''}${body}</body></html>`;
+          const w = window.open('', '_blank', 'width=800,height=600');
+          if (w) {
+            w.document.write(full);
+            w.document.close();
+            setTimeout(() => { w.print(); }, 300);
+          } else {
+            downloadBlob(full, `${safeName(data.project.title)}.html`, 'text/html');
+          }
+        } else if (fmt === 'docx') {
+          const body = (data.documents || []).map((d) => d.html).join('\n');
+          try {
+            const blob = htmlToDocxBlob(body, data.project.title);
+            downloadBlob(blob, `${safeName(data.project.title)}.docx`, blob.type);
+          } catch (e) {
+            toast('DOCX export failed', 'error');
+          }
         }
         const modal = document.getElementById('export-modal');
         if (modal) modal.style.display = 'none';
